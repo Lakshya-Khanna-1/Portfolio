@@ -1,0 +1,7 @@
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Float, Icosahedron, MeshDistortMaterial, Points, PointMaterial } from '@react-three/drei'
+import { useMemo, useRef } from 'react'
+import * as THREE from 'three'
+function Core(){const mesh=useRef();const {pointer}=useThree();useFrame((s,d)=>{if(!mesh.current)return;mesh.current.rotation.x+=d*.08;mesh.current.rotation.y+=d*.13;mesh.current.position.x=THREE.MathUtils.lerp(mesh.current.position.x,pointer.x*.45,.025);mesh.current.position.y=THREE.MathUtils.lerp(mesh.current.position.y,pointer.y*.3,.025)});return <Float speed={1.3} floatIntensity={.7}><Icosahedron ref={mesh} args={[1.45,5]}><MeshDistortMaterial color="#101827" roughness={.18} metalness={.8} distort={.33} speed={1.5}/></Icosahedron><mesh scale={1.65}><icosahedronGeometry args={[1.2,1]}/><meshBasicMaterial color="#63e6ff" wireframe transparent opacity={.12}/></mesh></Float>}
+function Stars(){const p=useMemo(()=>{const a=new Float32Array(600*3);for(let i=0;i<a.length;i++)a[i]=(Math.random()-.5)*14;return a},[]);return <Points positions={p} stride={3} frustumCulled><PointMaterial transparent color="#9ff4ff" size={.018} sizeAttenuation depthWrite={false} opacity={.55}/></Points>}
+export default function Scene(){return <Canvas dpr={[1,1.5]} camera={{position:[0,0,5],fov:48}} gl={{alpha:true,antialias:true,powerPreference:'high-performance'}}><ambientLight intensity={.6}/><pointLight position={[3,2,4]} intensity={14} color="#64e9ff"/><pointLight position={[-3,-2,2]} intensity={8} color="#6473ff"/><Stars/><Core/></Canvas>}
